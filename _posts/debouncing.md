@@ -1,29 +1,26 @@
-
-After encountering a problem that required debouncing micro-controller inputs then perusing the internet for resources, I found a ridiculous amount of proposed solutions with no theory to support their effectiveness. Many of these solutions were also blatantly awful. Button debouncing is not a particularly difficult problem so I imagine most of these solutions are "good enough" in practice, but that is a scary way to develop technology.
+After working with embedded systems, talking with
 
 In this post I will look at some theory then examine a few approaches and rate them based on their integrity, overhead, and response time.
 
-__IMPORTANT NOTE:__ There is no such thing as one size fits all, but tailors don't start from the ground up when they make a suit. In order develop a sleek solution that will make the opposite sex swoon, the situation it will be used in and its measurements need to be considered.
+# Theory
 
-# Theory -- Skip this if you're in a rush/lazy
+__PROBLEM:__ Input devices are physical components and will "bounce" between states during a state change causing inputs to be misinterpreted.
 
-__PROBLEM:__ Some input devices are junk and will "bounce" between states during a state change.
-
-This bouncing is a result of:<sup id="">[]()</sup>
+This bouncing is a result of: [1][1]
 
 - capacitance (parasitic or otherwise) causing the signal to linger in a meta-stable state
 
-- physical characteristics of the button causing contacts to be rebounded off
+- physical characteristics of the button causing contacts to rebound
 
-These factors vary so much that it's infeasible to model input bounce, so unfortunately every solution is going to be inherently flawed. In the digital world we normally get to pretend everything is perfect -- we'll live long, fulfilling lives and never know what stress is! Unfortunately the nastiness of input debouncing is the analog world breaching our abstraction defense and ruining our day.
+These factors vary so much that it's infeasible to accurately model input bounce. As a result, processing input signals will always have latency. 
 
-Embedded/firmware engineers are the wardens of the digital world, and it is their responsibility to shield the innocent from the horrors of analog design with sound abstraction models. In order to come up with a sound model the following contracts need to be established:
+In order to 
 
-- there is a frequency that any input signal slower than is guaranteed to be recognized: `input frequency`
+- there is a frequency upper bound that any signal within is guaranteed to be recognized: `input width`
 
 - there is a period after which an input is guaranteed to be responded to: `input delay`
 
-The goals are to minimize both input width and delay while __never__ misinterpreting an input due to bounce. Misinterpreting input is failing the citizens of the digital world and exposing them to harsh realities. Using too much computational overhead is also criminal.
+The goal is to minimize both input width and delay while __never__ misinterpreting an input due to bounce. Using a significant computational overhead is also undesirable.
 
 ## Sampling Theory
 
@@ -63,7 +60,7 @@ This assertion holds because one or more of the samples must be from outside the
 
 __2:__ 
 
-> Given a signal where the only noise is due to input bounce and a stable state, if the opposite state is sampled we know we are at some point in the debounce period.
+> Given a signal where the longest period of noise is due to input bounce and a stable state, if the opposite state is sampled we know we are at some point in the debounce period.
 
 If a state is known to be stable then the only way it may change is by the input being toggled.
 
@@ -83,8 +80,10 @@ The two assertions from the theory section can be applied in many different ways
 
 - Input frequency
 
-## The Optimal Solution
+## Single input
 
-This solution will only work if you're working with hardware or an FPGA.
+```C
 
 
+
+```
