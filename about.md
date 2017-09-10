@@ -14,10 +14,12 @@ David Pfeiffer is a computer engineering major at the University of Maryland, cl
 
 Areas of interest are:
 
-- programming languages
-- formal methods
 - FPGA architecture
 - digital design
 - operating systems
 - low-level programming
 - computer architecture
+- programming languages
+- formal methods
+
+Resume can be found: [here](https://www.dropbox.com/s/8471ddtkdzt4l5t/resume.pdf?dl=0)
