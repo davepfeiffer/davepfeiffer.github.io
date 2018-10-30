@@ -1,7 +1,7 @@
 
 SRC=./src
 BIN=./articles
-$(BIN)/2017-08-22-debounce.html: $(SRC)/2017-08-22-debounce.md
+$(BIN)/Switch_Debouncing_August_2018.html: $(SRC)/Switch_Debouncing_August_2018.md
 	 pandoc -s -t html5 --output $@ --css ../article.css $<
 
-all:  $(BIN)/2017-08-22-debounce.html
+all:  $(BIN)/Switch_Debouncing_August_2018.html

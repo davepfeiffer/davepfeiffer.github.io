@@ -1,4 +1,6 @@
 
+These are personal notes I compiled after encountering a lot of folk knowledge reguarding button deboucing. The notes are not edited to a high level of quality, and are only posted in the off chance someone stumbles on them and finds them useful.
+
 # General Theory
 
 __Problem:__ Input devices are physical/analog components and will '_bounce_'
@@ -6,9 +8,9 @@ between states during a transition causing inputs to be misinterpreted.
 
 This bouncing is a result of:
 
-- Capacitance causing the signal to linger in a meta-stable state (midway between logical 0 and 1) [1]
+- Capacitance causing the signal to linger in a meta-stable state (midway between logical 0 and 1) ^[^1]^
 
-- Physical characteristics of the button causing contacts to rebound [2]
+- Physical characteristics of the button causing contacts to rebound ^[^2]^
 
 These behaviors depend on so many variables that it's infeasible to create an accurate input bounce model for each device. As a result, polling bouncy signals will always have to make sacrifices. 
 
@@ -18,13 +20,13 @@ Fortunately--much like the digital world pretends analog signals are either on o
 
 - `input latency` -- the maximum amount of time between an input's state changing and the software seeing said change
 
-The goal is to minimize both input width and latency while __never__ misinterpreting an input due to bounce. Using a significant computational overhead is also undesirable.
+The goal is to minimize both input width and latency while _never_ misinterpreting an input due to bounce. Using a significant computational overhead is also undesirable.
 
 ## Sampling Theory
 
-At some point, whether it's by a hardware interrupt or software, all input into a micro-processor is going to be polled [3]. So understanding issues related to polling is absolutely necessary while writing any sort of physical facing code, debouncing or otherwise.
+At some point, whether it's by a hardware interrupt or software, all input into a micro-processor is going to be polled ^[^3]^. So understanding issues related to polling is absolutely necessary while writing any sort of physical facing code, debouncing or otherwise.
 
-When polling analog signals the digital world, the most powerful tool is the `Cardinal Theorem of Interpolation` (aka Nyquist's Theorem) [4]. The theorem roughly states:
+When polling analog signals the digital world, the most powerful tool is the `Cardinal Theorem of Interpolation` (aka Nyquist's Theorem) ^[^4]^. The theorem roughly states:
 
 > If a signal has a maximum frequency of X hertz, it can be completely determined by sampling every 1 / (2 * X) seconds.
 
@@ -72,9 +74,10 @@ Giving a constant:
 
 - ` input_delay = 2 * bounce_period + sample_period `
 
-__2:__ 
+__2:__
 
 > Given a signal where the only noise is due to bounce and the state is known to be stable. If the opposite state is sampled, the current state can be safely toggled.
+
 
 This assertion holds because:
 
@@ -90,11 +93,10 @@ Because there is no way of knowing if the edge was detected at the beginning of 
 
 - ` input_delay = 0 --> bounce_period `
 
-- ` average_input_delay = bounce_period / 2` [5]
+- ` average_input_delay = bounce_period / 2` ^[^5]^
 
 _Note:_ Neither of these assertions hold unless the clean signal is being sampled at or above its Nyquist Rate.
 
----
 
 # Physical Implementation
 
@@ -102,24 +104,22 @@ First off, the bounce time needs to be determined. Any rules of thumb passed aro
 
 The two assertions lend themselves to very different strategies:
 
-- Generally, the first assertion will lend itself better for a software polling approach. The strategy has the advantages of being simple to implement and more noise tolerant [6].
+- Generally, the first assertion will lend itself better for a software polling approach. The strategy has the advantages of being simple to implement and more noise tolerant. ^[^6]^
 
 - The second assertion translates well to hardware interrupts. Using interrupts will relieve CPU overhead, but will also introduce extra program complexity (interrupts can introduce data races and other concurrency bugs).
 
 The theory covered in these notes should be enough to implement debouncing schemes that inspire confidence. Because good solutions will be heavily dependent on the architecture, I'll leave actual implementations as an exercise for the reader. There are many interesting optimizations that can be made depending on the problem structure. Feel free to send me an email if you have questions, input, or an interesting implementation.
 
----
-
 # Footnotes
 
-[1] [Wikipedia on Metastability](https://en.wikipedia.org/wiki/Metastability_in_electronics), [ASIC World](http://www.asic-world.com/tidbits/metastablity.html) -- It is very important to be familiar with metastability if you ever deal with flip-flops.
+[^1]: [Wikipedia on Metastability](https://en.wikipedia.org/wiki/Metastability_in_electronics), [ASIC World](http://www.asic-world.com/tidbits/metastablity.html) -- It is very important to be familiar with metastability if you ever deal with flip-flops.
 
-[2] [A Guide to Debouncing, or, How to Debounce a Contact in Two Easy Pages](http://www.ganssle.com/debouncing-pt2.htm) -- A very thorough analysis of bounce in various physical components, definately worth checking out if only for this. There are also some proposed hardware and software solutions. Unfortunately, the software versions weren't particularly attractive and didn't have any supporting theory.
+[^2]: [A Guide to Debouncing, or, How to Debounce a Contact in Two Easy Pages](http://www.ganssle.com/debouncing-pt2.htm) -- A very thorough analysis of bounce in various physical components, definately worth checking out if only for this. There are also some proposed hardware and software solutions. Unfortunately, the software versions weren't particularly attractive and didn't have any supporting theory.
 
-[3] Either you are manually polling in your software or your interrupt manager is polling in hardware (virtually for free). At some point the signal is being latched into a flip-flop.
+[^3]: Either you are manually polling in your software or your interrupt manager is polling in hardware (virtually for free). At some point the signal is being latched into a flip-flop.
 
-[4] [Nyquist's Theorem](https://ptolemy.eecs.berkeley.edu/eecs20/week13/nyquistShannon.html)
+[^4]: [Nyquist's Theorem](https://ptolemy.eecs.berkeley.edu/eecs20/week13/nyquistShannon.html)
 
-[5] This assumes a uniform distribution of when the state change is detected. In reality the state change will likely be detected sooner or later depending on the sample rate. Better modeled as an [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) where llambda is some relationship between the sample frequency and specific noise signal.
+[^5]: This assumes a uniform distribution of when the state change is detected. In reality the state change will likely be detected sooner or later depending on the sample rate. Better modeled as an [exponential distribution](https://en.wikipedia.org/wiki/Exponential_distribution) where llambda is some relationship between the sample frequency and specific noise signal.
 
-[6] A blip caused by noise will just make the first approach wait another bounce period before changing state. Noise will cause the second approach to erroneously toggle state and ignore a full debounce period, creating havoc.
+[^6]: A blip caused by noise will just make the first approach wait another bounce period before changing state. Noise will cause the second approach to erroneously toggle state and ignore a full debounce period, creating havoc.

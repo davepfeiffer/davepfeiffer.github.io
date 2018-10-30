@@ -2,4 +2,4 @@ Here's a short description of the blog. It may have a nice quote or oneliner or 
 
 # Posts
 
-* [2017-08-22-debounce](articles/2017-08-22-debounce.html)
+* [Switch_Debouncing_August_2018](articles/Switch_Debouncing_August_2018.html)

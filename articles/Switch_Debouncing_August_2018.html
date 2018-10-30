@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>2017-08-22-debounce</title>
+  <title>Switch_Debouncing_August_2018</title>
   <style type="text/css">
       code{white-space: pre-wrap;}
       span.smallcaps{font-variant: small-caps;}
@@ -23,7 +23,7 @@
 <p>This bouncing is a result of:</p>
 <ul>
 <li><p>Capacitance causing the signal to linger in a meta-stable state (midway between logical 0 and 1) <sup><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></sup></p></li>
-<li><p>Physical characteristics of the button causing contacts to rebound <a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></p></li>
+<li><p>Physical characteristics of the button causing contacts to rebound <sup><a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a></sup></p></li>
 </ul>
 <p>These behaviors depend on so many variables that it’s infeasible to create an accurate input bounce model for each device. As a result, polling bouncy signals will always have to make sacrifices.</p>
 <p>Fortunately–much like the digital world pretends analog signals are either on or off–an abstraction model can be set up to make handling bounce easier. The only contracts needed for such a model are:</p>
@@ -31,10 +31,10 @@
 <li><p><code>input width</code> – the minimum period an input must remain in a state in order to be recognized</p></li>
 <li><p><code>input latency</code> – the maximum amount of time between an input’s state changing and the software seeing said change</p></li>
 </ul>
-<p>The goal is to minimize both input width and latency while <strong>never</strong> misinterpreting an input due to bounce. Using a significant computational overhead is also undesirable.</p>
+<p>The goal is to minimize both input width and latency while <em>never</em> misinterpreting an input due to bounce. Using a significant computational overhead is also undesirable.</p>
 <h2 id="sampling-theory">Sampling Theory</h2>
-<p>At some point, whether it’s by a hardware interrupt or software, all input into a micro-processor is going to be polled <a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. So understanding issues related to polling is absolutely necessary while writing any sort of physical facing code, debouncing or otherwise.</p>
-<p>When polling analog signals the digital world, the most powerful tool is the <code>Cardinal Theorem of Interpolation</code> (aka Nyquist’s Theorem) <a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>. The theorem roughly states:</p>
+<p>At some point, whether it’s by a hardware interrupt or software, all input into a micro-processor is going to be polled <sup><a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a></sup>. So understanding issues related to polling is absolutely necessary while writing any sort of physical facing code, debouncing or otherwise.</p>
+<p>When polling analog signals the digital world, the most powerful tool is the <code>Cardinal Theorem of Interpolation</code> (aka Nyquist’s Theorem) <sup><a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a></sup>. The theorem roughly states:</p>
 <blockquote>
 <p>If a signal has a maximum frequency of X hertz, it can be completely determined by sampling every 1 / (2 * X) seconds.</p>
 </blockquote>
@@ -54,7 +54,7 @@
 </center>
 <p><br><br></p>
 <p>With the above limitations in mind, two useful assertions can be made:</p>
-<p><strong>1:</strong> —-</p>
+<p><strong>1:</strong></p>
 <blockquote>
 <p>Given a signal where the only noise is due to bounce and the same state has been sampled over a period longer than the debounce period, the state can be assumed to be stable.</p>
 </blockquote>
@@ -70,7 +70,7 @@
 <li><p><code>input_width = 2 * bounce_period + sample_period</code></p></li>
 <li><p><code>input_delay = 2 * bounce_period + sample_period</code></p></li>
 </ul>
-<p><strong>2:</strong> —-</p>
+<p><strong>2:</strong></p>
 <blockquote>
 <p>Given a signal where the only noise is due to bounce and the state is known to be stable. If the opposite state is sampled, the current state can be safely toggled.</p>
 </blockquote>
@@ -84,18 +84,17 @@
 <ul>
 <li><p><code>input_width = 2 * bounce_period + sample_period</code></p></li>
 <li><p><code>input_delay = 0 --&gt; bounce_period</code></p></li>
-<li><p><code>average_input_delay = bounce_period / 2</code> <a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></p></li>
+<li><p><code>average_input_delay = bounce_period / 2</code> <sup><a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a></sup></p></li>
 </ul>
 <p><em>Note:</em> Neither of these assertions hold unless the clean signal is being sampled at or above its Nyquist Rate.</p>
 <h1 id="physical-implementation">Physical Implementation</h1>
 <p>First off, the bounce time needs to be determined. Any rules of thumb passed around are essentially folk-lore. Physical devices vary drastically and some sort of measurements need to take place for a reasonable amount of confidence.</p>
 <p>The two assertions lend themselves to very different strategies:</p>
 <ul>
-<li><p>Generally, the first assertion will lend itself better for a software polling approach. The strategy has the advantages of being simple to implement and more noise tolerant <a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>.</p></li>
+<li><p>Generally, the first assertion will lend itself better for a software polling approach. The strategy has the advantages of being simple to implement and more noise tolerant. <sup><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a></sup></p></li>
 <li><p>The second assertion translates well to hardware interrupts. Using interrupts will relieve CPU overhead, but will also introduce extra program complexity (interrupts can introduce data races and other concurrency bugs).</p></li>
 </ul>
 <p>The theory covered in these notes should be enough to implement debouncing schemes that inspire confidence. Because good solutions will be heavily dependent on the architecture, I’ll leave actual implementations as an exercise for the reader. There are many interesting optimizations that can be made depending on the problem structure. Feel free to send me an email if you have questions, input, or an interesting implementation.</p>
-<hr />
 <h1 id="footnotes">Footnotes</h1>
 <section class="footnotes">
 <hr />
