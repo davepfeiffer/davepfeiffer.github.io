@@ -1,6 +1,5 @@
-Here's a short description of the blog. It may have a nice quote or something else snappy. This sentence is just padding the length to test the css stylesheet with pandoc.
+Here's a short description of the blog. It may have a nice quote or oneliner or something. This sentence is just padding the length to test the css stylesheet with pandoc.
 
 # Posts
 
-* [Newest Post](www.histru.net)
-* [2017-08-22-debounce](dmpfeiffer.com/articles/2017-08-22-debounce.html)
+* [2017-08-22-debounce](articles/2017-08-22-debounce.html)

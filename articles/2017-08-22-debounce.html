@@ -11,17 +11,12 @@
       span.underline{text-decoration: underline;}
       div.column{display: inline-block; vertical-align: top; width: 50%;}
   </style>
-  <link rel="stylesheet" href="./article.css" />
+  <link rel="stylesheet" href="../article.css" />
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
 </head>
 <body>
-<hr />
-<p>layout: post title: “Debouncing Theory” date: 2017-08-22 00:00:00</p>
-<hr />
-<p>While I was working with embedded systems, the issue of button debouncing in software came up regularly. In order to implement debouncing schemes with confidence, I compiled some semi-formal notes on debouncing/sampling theory in my spare time. I polished the notes up and posted them here in the off chance that someone will find them useful (maybe my future self).</p>
-<hr />
 <h1 id="general-theory">General Theory</h1>
 <p><strong>Problem:</strong> Input devices are physical/analog components and will ‘<em>bounce</em>’ between states during a transition causing inputs to be misinterpreted.</p>
 <p>This bouncing is a result of:</p>
