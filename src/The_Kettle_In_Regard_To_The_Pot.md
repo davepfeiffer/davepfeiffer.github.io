@@ -6,6 +6,6 @@ After some time had passed, both the kettle and the pot rested above their heati
 
 ---
 
-This post was originally a comment that I enjoyed writing for a HackerNews thread. [1] I've edited a few things since and will post a date somewhere on this page when I freeze in a state that I'm happy with.
+This post was originally a comment that I enjoyed writing for a HackerNews thread. ^[^1]^ I've edited a few things since and will post a date somewhere on this page when I freeze in a state that I'm happy with.
 
-[1]: https://news.ycombinator.com/item?id=18419807
+[^1]: https://news.ycombinator.com/item?id=18419807

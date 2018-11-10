@@ -1,6 +1,6 @@
 David Pfeiffer's Personal Blog
 
-contact me at: blog@dmpfeiffer.com
+Contact me at: blog@dmpfeiffer.com
 
 # Posts
 
