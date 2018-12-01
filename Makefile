@@ -1,7 +1,7 @@
 
 ROOT=.
-SRC=src
-BIN=articles
+SRC=articles
+BIN=pages
 
 ART_STYLE= css/skinned.css
 

@@ -8,7 +8,7 @@ if __name__ == "__main__":
   parser.add_argument('template', help="the path to the index template")
   parser.add_argument('output', default='index.md', nargs='?',
       help="the index filename to be written")
-  parser.add_argument('--article_dir', default='articles',
+  parser.add_argument('--article_dir', default='pages',
       help="the path to the html web article outputs")
   args = parser.parse_args()
 
